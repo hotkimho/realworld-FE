@@ -1,0 +1,1 @@
+export const BASE_URL = 'http://https://api.kp-realworld.com/';
