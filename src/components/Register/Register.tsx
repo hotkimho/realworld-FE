@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import {VerifyEmail} from "../../services/api";
+import {ApiErrorResponse, isApiErrorResponse} from "../../types/error";
 // 필요하다면 react-router-dom에서 useNavigate를 임포트하여 페이지 이동 처리
 
 const Register: React.FC = () => {
@@ -19,18 +20,38 @@ const Register: React.FC = () => {
         });
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log("gogogo")
         try {
-            // username 중복검사
-            const response = VerifyEmail(formData.email);
-            // console.log(response);
             // email 중복검사
-            const rr =  axios.get("https://api.kp-realworld.com/heartbeat")
+            // 400, 409가 발생한 경우 ApiErrorResponse타입 반환
+            // 200이 발생한 경우 VerifyEmailResponse 반환
+            const response =  await VerifyEmail(formData.email);
+
+
+            // 에러가 발생하지 않은 경우(이메일이 중복되지 않음 200)
+            // // email 중복검사
+            // const rr =  axios.get("http://localhost:8080/heartbeat").then((response) => {
+            //     console.log(response.status);
+            // })
+
             // 회원가입
         } catch (error) {
-            console.error(error);
+
+            console.log("qwekopqwekopqwekop : ", error)
+            if (isApiErrorResponse(error)) {
+                if (error.error.code === 400) {
+                    console.log("이메일 유효하지않음")
+                }
+                if (error.error.code === 409) {
+                    console.log("이메일 중복됨")
+                }
+            } else {
+                console.log("걸리지 않음")
+            }
+            // error message, status 값 출력
+
         }
         // 성공 시, 홈페이지 또는 로그인 페이지로 리디렉션
     };

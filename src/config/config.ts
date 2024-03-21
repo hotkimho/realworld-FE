@@ -1,1 +1,1 @@
-export const BASE_URL = 'http://https://api.kp-realworld.com/';
+export const BASE_URL = 'http://api.kp-realworld.com/';
