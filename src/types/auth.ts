@@ -2,11 +2,11 @@ export interface VerifyEmailResponse {
     email: string;
 }
 
-export interface  VerifyUsernameResponse {
+export interface VerifyUsernameResponse {
     username: string;
 }
 
-export interface  SignUpResponse {
+export interface SignUpResponse {
     user: {
         email: string;
         user_id: number;
