@@ -11,5 +11,15 @@ export interface  SignUpResponse {
         email: string;
         user_id: number;
         username: string;
+        profile_image?: string;
+    }
+}
+
+export interface SignInResponse {
+    user: {
+        access_token: string;
+        refresh_token: string;
+        user_id: number;
+        username: string;
     }
 }
