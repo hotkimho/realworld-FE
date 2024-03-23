@@ -7,6 +7,7 @@ import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";
 import HeroImage from "./components/Home/HeroImage";
 import ArticleList from "./components/Article/ArticleList";
+import ArticleView from "./components/Article/ArticleView";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
                   </>
               } />
             {/*<Route path="/" element={<Home />} />*/}
+              <Route path="/user/:authorId/article/:articleId" element={<ArticleView />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
