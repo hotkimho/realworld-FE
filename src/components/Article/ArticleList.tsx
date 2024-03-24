@@ -7,6 +7,7 @@ import FeedTab from "./FeedTab";
 import Pagination from "./Pagination";
 import {getArticles, getArticlesByTag} from "../../services/article";
 import PopularTag from "./PopularTag";
+import {isApiErrorResponse} from "../../types/error";
 
 
 const ArticleList: React.FC = () => {
@@ -16,13 +17,20 @@ const ArticleList: React.FC = () => {
 
     useEffect(() => {
         const fetchArticles = async () => {
-            console.log("in fetchArticles : ", activeTab, currentPage)
-            const response = await getArticles(currentPage + 1);
-            console.log("get articles response : ", response.articles)
-            setArticles(response.articles);
+            try {
+                const response = await getArticles(currentPage + 1);
+                setArticles(response.articles);
+            } catch (error) {
+                if (isApiErrorResponse(error)) {
+                    if (error.error.code === 400) {
+                        console.error('Bad request in handleSelectTag', error)
+                    } else {
+                        console.error('Unknown error in handleSelectTag', error)
+                    }
+                }
+            }
         };
 
-        console.log("in useEffect : ", activeTab, currentPage)
         fetchArticles();
     }, [activeTab, currentPage]);
 
@@ -35,8 +43,19 @@ const ArticleList: React.FC = () => {
 
     const handleSelectTag = async (tag: string) => {
         // 태그에 따른 글 목록을 불러오는 API 호출
-        const response = await getArticlesByTag(tag, currentPage); // 이 함수는 구현되어야 합니다.
-        setArticles(response.articles);
+        try {
+            const response = await getArticlesByTag(tag, currentPage); // 이 함수는 구현되어야 합니다.
+            setArticles(response.articles);
+        } catch (error) {
+            if (isApiErrorResponse(error)) {
+                if (error.error.code === 400) {
+                    console.error('Bad request in handleSelectTag', error)
+                } else {
+                    console.error('Unknown error in handleSelectTag', error)
+                }
+            }
+        }
+
     };
 
     return (

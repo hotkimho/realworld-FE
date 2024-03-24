@@ -29,14 +29,14 @@ const ArticleItem: React.FC<{ article: ArticleItemType }> = ({ article }) => {
             </div>
 
             <div className="mt-4">
-                <Link to={`/article/${article.article_id}`} className="hover:underline">
+                <Link to={`/user/${article.author.author_id}/article/${article.article_id}`} className="hover:underline">
                     <h3 className="text-xl font-bold mb-2">{article.title}</h3>
                     <p className="text-gray-700 mb-4">{trimmedBody}</p>
                 </Link>
             </div>
 
             <div className="flex items-center justify-between mt-4">
-                <Link to={`/article/${article.article_id}`} className="text-green-500 hover:text-green-600 hover:underline">
+                <Link to={`/user/${article.author.author_id}/article/${article.article_id}`} className="text-green-500 hover:text-green-600 hover:underline">
                     Read more...
                 </Link>
                 <div className="flex gap-2">

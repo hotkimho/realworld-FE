@@ -18,7 +18,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: white;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -41,3 +41,7 @@
   }
 }
 
+
+.appBackground {
+  background-color: white; /* 전체 배경색을 흰색으로 설정 */
+}

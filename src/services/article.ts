@@ -2,7 +2,7 @@ import {SignInResponse} from "../types/auth";
 import axios from "axios";
 import {BASE_URL} from "../config/config";
 import {ApiErrorResponse} from "../types/error";
-import {ArticleListType} from "../types/article";
+import {ArticleDetailType, ArticleListType} from "../types/article";
 
 
 
@@ -51,6 +51,33 @@ export const getArticlesByTag = async (tag: string, offset: number): Promise<Art
                 page: offset,
                 tag: tag,
             }
+        });
+
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw {
+                error: {
+                    code: error.response?.data.error.code,
+                    message: error.response?.data.error.message,
+                }
+            } as ApiErrorResponse;
+        }
+
+        throw new Error("알 수 없는 에러가 발생했습니다.")
+    }
+}
+
+
+export const getArticleById = async (authorId:string, articleId:string): Promise<ArticleDetailType> => {
+    try {
+
+        // query param limit=10 추가
+        const response = await axios.get<ArticleDetailType>(`${BASE_URL}/user/${authorId}/article/${articleId}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `${localStorage.getItem("accessToken")}`,
+            },
         });
 
         return response.data;
