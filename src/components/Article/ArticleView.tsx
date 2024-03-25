@@ -9,6 +9,7 @@ import {deleteArticle, getArticleById} from "../../services/article";
 import {isApiErrorResponse} from "../../types/error";
 import {logoutInLocalStorage} from "../../Util/auth";
 import {getCommentListByArticleId} from "../../services/comment";
+import {CommentListType} from "../../types/comment";
 
 const ArticleView: React.FC = () => {
     const [article, setArticle] = useState<ArticleDetailType['article'] | null>(null);
@@ -16,6 +17,8 @@ const ArticleView: React.FC = () => {
         authorId: string;
         articleId: string;
     }>();
+    const [comments, setComments] = useState<CommentListType['comments']>([]);
+
     const isLoggedIn = !!localStorage.getItem('access_token');
     const loggedInUsername = localStorage.getItem('username'); // 로컬 스토리지에서 username 가져오기
     const navigate = useNavigate();
@@ -46,29 +49,6 @@ const ArticleView: React.FC = () => {
         }
     };
 
-
-    // fetchArticle();
-
-    const onCommentPosted = () => {
-        // 예시: 댓글이 추가된 후 댓글 리스트를 새로고침하기 위해 fetchArticle을 호출
-        fetchArticle();
-    };
-
-    // fetchComment();
-    // const fetchComments = async (authorId:string, articleId:string) => {
-    //     try {
-    //         const response = await getCommentListByArticleId(authorId, articleId);
-    //         setComments(response.comments);
-    //     } catch (error) {
-    //         if (isApiErrorResponse(error)) {
-    //             if (error.error.code === 400) {
-    //                 console.error('Bad request in handleSelectTag', error)
-    //             } else {
-    //                 console.error('Unknown error in handleSelectTag', error)
-    //             }
-    //         }
-    //     }
-    // };
     // delete article function
     const onDeleteArticle = async () => {
         if (authorId === undefined || articleId === undefined) {
@@ -102,6 +82,21 @@ const ArticleView: React.FC = () => {
     if (!article) return <div>Loading...</div>;
 
     const isOwnArticle = article?.author.username === loggedInUsername;
+
+    const fetchComments = async (authorId:string, articleId:string) => {
+        try {
+            const response = await getCommentListByArticleId(authorId, articleId);
+            setComments(response.comments);
+        } catch (error) {
+            if (isApiErrorResponse(error)) {
+                if (error.error.code === 400) {
+                    console.error('Bad request in handleSelectTag', error)
+                } else {
+                    console.error('Unknown error in handleSelectTag', error)
+                }
+            }
+        }
+    };
 
     return (
         <div className="overflow-auto">
@@ -180,8 +175,14 @@ const ArticleView: React.FC = () => {
 
             </div>
             <hr className="my-4" />
-            {isLoggedIn && <CommentForm authorId={authorId || ""} articleId={articleId || ''} onCommentPosted={onCommentPosted} />}
-            <CommentList authorId={String(article.author.author_id)}  articleId={String(article.article_id)} />
+            {isLoggedIn && <CommentForm authorId={authorId || ""} articleId={articleId || ''} onFetchComments={fetchComments} />}
+            <CommentList
+                authorId={String(article.author.author_id)}
+                articleId={String(article.article_id)}
+                comments={comments}
+                setComments={setComments}
+                onFetchComments={fetchComments}
+            />
 
         </div>
     );

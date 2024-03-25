@@ -8,7 +8,10 @@ import {createComment} from "../../services/comment";
 interface CommentFormProps {
     authorId: string;
     articleId: string;
-    onCommentPosted: () => void;
+    onFetchComments: (
+        authorId: string,
+        articleId: string,
+    ) => void;
 }
 
 const BASE_URL = 'http://your-api-base-url.com';
@@ -17,7 +20,7 @@ const CommentForm: React.FC<CommentFormProps> = (
     {
         authorId,
         articleId,
-        onCommentPosted,
+        onFetchComments,
     }) => {
     const [commentBody, setCommentBody] = useState('');
 
@@ -31,7 +34,7 @@ const CommentForm: React.FC<CommentFormProps> = (
         try {
             const response = await createComment(authorId, articleId, commentBody);
             setCommentBody('');
-            onCommentPosted();
+            onFetchComments(authorId, articleId);
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {

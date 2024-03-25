@@ -7,32 +7,27 @@ import {logoutInLocalStorage} from "../../Util/auth";
 interface CommentListProps {
     authorId: string;
     articleId: string;
+    comments: CommentListType['comments'];
+    setComments: React.Dispatch<React.SetStateAction<CommentListType['comments']>>;
+    onFetchComments: (authorId:string, articleId:string) => void;
 }
 
-const CommentList: React.FC<CommentListProps> = ({ authorId, articleId }) => {
-    const [comments, setComments] = useState<CommentListType['comments']>([]);
+const CommentList: React.FC<CommentListProps> = (
+    {
+        authorId,
+        articleId,
+        comments,
+        setComments,
+        onFetchComments
+    }) => {
+    // const [comments, setComments] = useState<CommentListType['comments']>([]);
     const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
     const [editingText, setEditingText] = useState("");
     const loggedInUsername = localStorage.getItem('username');
 
     useEffect(() => {
-        fetchComments();
+        onFetchComments(authorId, articleId);
     }, [articleId]);
-
-    const fetchComments = async () => {
-        try {
-            const response = await getCommentListByArticleId(authorId, articleId);
-            setComments(response.comments);
-        } catch (error) {
-            if (isApiErrorResponse(error)) {
-                if (error.error.code === 400) {
-                    console.error('Bad request in handleSelectTag', error)
-                } else {
-                    console.error('Unknown error in handleSelectTag', error)
-                }
-            }
-        }
-    };
 
     const handleEditClick = (commentId: string, currentText: string) => {
         setEditingCommentId(commentId);
@@ -43,7 +38,7 @@ const CommentList: React.FC<CommentListProps> = ({ authorId, articleId }) => {
         try {
             const response = await updateComment(authorId, articleId, commentId, editingText);
             setEditingCommentId(null); // 수정 모드 종료
-            fetchComments(); // 댓글 목록 새로고침
+            onFetchComments(authorId, articleId); // 댓글 목록 새로고침
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {
@@ -63,7 +58,7 @@ const CommentList: React.FC<CommentListProps> = ({ authorId, articleId }) => {
     const handleDeleteClick = async (commentId: string) => {
         try {
             await deleteComment(authorId, articleId, commentId);
-            fetchComments(); // 댓글 목록 새로고침
+            onFetchComments(authorId, articleId); // 댓글 목록 새로고침
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {
