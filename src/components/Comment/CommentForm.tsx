@@ -1,31 +1,50 @@
 // CommentForm.tsx
 import React, { useState } from 'react';
 import axios from 'axios';
+import {isApiErrorResponse} from "../../types/error";
+import {logoutInLocalStorage} from "../../Util/auth";
+import {createComment} from "../../services/comment";
 
 interface CommentFormProps {
+    authorId: string;
     articleId: string;
     onCommentPosted: () => void;
 }
 
 const BASE_URL = 'http://your-api-base-url.com';
 
-const CommentForm: React.FC<CommentFormProps> = ({ articleId, onCommentPosted }) => {
+const CommentForm: React.FC<CommentFormProps> = (
+    {
+        authorId,
+        articleId,
+        onCommentPosted,
+    }) => {
     const [commentBody, setCommentBody] = useState('');
 
     const handleCommentSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        if (!authorId || !articleId) {
+            throw new Error('authorId or articleId is missing');
+        }
         if (!commentBody.trim()) return;
 
         try {
-            await axios.post(
-                `${BASE_URL}/articles/${articleId}/comments`,
-                { body: commentBody },
-                { headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` } }
-            );
+            const response = await createComment(authorId, articleId, commentBody);
             setCommentBody('');
             onCommentPosted();
         } catch (error) {
-            console.error('Failed to submit comment:', error);
+            if (isApiErrorResponse(error)) {
+                if (error.error.code === 400) {
+                    console.error('Bad request in handleSelectTag', error)
+                } else if (error.error.code === 401 || error.error.code === 403) {
+                    // 인증이 유효하지 않습니다 다시 로그인해주세요 경고창과 함께 로그인 페이지로 이동
+                    logoutInLocalStorage()
+                    alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
+                    window.location.href = '/login';
+                } else {
+                    console.error('Unknown error in handleSelectTag', error)
+                }
+            }
         }
     };
 

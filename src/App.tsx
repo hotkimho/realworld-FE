@@ -9,6 +9,8 @@ import HeroImage from "./components/Home/HeroImage";
 import ArticleList from "./components/Article/ArticleList";
 import ArticleView from "./components/Article/ArticleView";
 import Footer from "./components/Footer/Footer";
+import ArticleCreate from "./components/Article/ArticleCreate";
+import ArticleEdit from "./components/Article/ArticleEdit";
 
 
 function App() {
@@ -25,8 +27,11 @@ function App() {
                           </>
                       } />
                       <Route path="/user/:authorId/article/:articleId" element={<ArticleView />} />
+                      <Route path="/user/:authorId/article/:articleId/edit" element={<ArticleEdit />} />
+
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
+                      <Route path="/article" element={<ArticleCreate />} />
                   </Routes>
               </div>
               {/*<Footer />*/}

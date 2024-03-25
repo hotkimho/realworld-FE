@@ -28,7 +28,7 @@ export interface ArticleListType {
 export interface ArticleCreateType {
     body: string;
     description: string;
-    tag_list?: string[];
+    tag_list: string[];
     title: string;
 }
 

@@ -11,7 +11,7 @@ const Login: React.FC = () => {
     });
 
     const [loginError, setLoginError] = useState(false); // 로그인 에러 상태
-    const navigate = useNavigate();
+    const navigate = useNavigate() ;
 
     const [emailInvalid, setEmailInvalid] = useState(false);
     const [passwordInvalid, setPasswordInvalid] = useState(false);
