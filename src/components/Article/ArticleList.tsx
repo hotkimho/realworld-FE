@@ -8,6 +8,7 @@ import Pagination from "./Pagination";
 import {getArticles, getArticlesByTag} from "../../services/article";
 import PopularTag from "./PopularTag";
 import {isApiErrorResponse} from "../../types/error";
+import {likeArticle, unlikeArticle} from "../../services/articleLike";
 
 
 const ArticleList: React.FC = () => {
@@ -15,22 +16,22 @@ const ArticleList: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'all' | 'user'>('all');
     const [currentPage, setCurrentPage] = useState(0); // 페이지네이션을 위한 상태
 
-    useEffect(() => {
-        const fetchArticles = async () => {
-            try {
-                const response = await getArticles(currentPage + 1);
-                setArticles(response.articles);
-            } catch (error) {
-                if (isApiErrorResponse(error)) {
-                    if (error.error.code === 400) {
-                        console.error('Bad request in handleSelectTag', error)
-                    } else {
-                        console.error('Unknown error in handleSelectTag', error)
-                    }
+    const fetchArticles = async () => {
+        try {
+            const response = await getArticles(currentPage + 1);
+            setArticles(response.articles);
+            console.log("in fetchArticles : ", response.articles)
+        } catch (error) {
+            if (isApiErrorResponse(error)) {
+                if (error.error.code === 400) {
+                    console.error('Bad request in handleSelectTag', error)
+                } else {
+                    console.error('Unknown error in handleSelectTag', error)
                 }
             }
-        };
-
+        }
+    };
+    useEffect(() => {
         fetchArticles();
     }, [activeTab, currentPage]);
 
@@ -42,7 +43,6 @@ const ArticleList: React.FC = () => {
     };
 
     const handleSelectTag = async (tag: string) => {
-        // 태그에 따른 글 목록을 불러오는 API 호출
         try {
             const response = await getArticlesByTag(tag, currentPage); // 이 함수는 구현되어야 합니다.
             setArticles(response.articles);
@@ -55,7 +55,16 @@ const ArticleList: React.FC = () => {
                 }
             }
         }
+    };
 
+    const toggleFavorite = async (authorId:string, articleId: string, isFavorited: boolean) => {
+        if (isFavorited) {
+            await unlikeArticle(authorId , articleId);
+        } else {
+            await likeArticle(authorId, articleId);
+        }
+        // 변경사항 반영을 위한 게시글 다시 불러오기
+        fetchArticles();
     };
 
     return (
@@ -64,7 +73,11 @@ const ArticleList: React.FC = () => {
                 <div className="flex-grow"> {/* 이 부분이 좌측 컨테이너입니다 */}
                     <FeedTab activeTab={activeTab} onTabChange={handleTabChange} />
                     {articles.map((article) => (
-                        <ArticleItem key={article.article_id} article={article} />
+                        <ArticleItem
+                            key={article.article_id}
+                            article={article}
+                            toggleFavorite={toggleFavorite}
+                        />
                     ))}
 
                 </div>

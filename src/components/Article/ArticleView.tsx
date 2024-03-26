@@ -11,6 +11,7 @@ import {logoutInLocalStorage} from "../../Util/auth";
 import {getCommentListByArticleId} from "../../services/comment";
 import {CommentListType} from "../../types/comment";
 import {likeArticle, unlikeArticle} from "../../services/articleLike";
+import {followUser, unfollowUser} from "../../services/follow";
 
 const ArticleView: React.FC = () => {
     const [article, setArticle] = useState<ArticleDetailType['article'] | null>(null);
@@ -21,6 +22,7 @@ const ArticleView: React.FC = () => {
     const [comments, setComments] = useState<CommentListType['comments']>([]);
     const [isFavorited, setIsFavorited] = useState<boolean>(false);
     const [favoriteCount, setFavoriteCount] = useState<number>(0);
+    const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
     const isLoggedIn = !!localStorage.getItem('access_token');
     const loggedInUsername = localStorage.getItem('username'); // 로컬 스토리지에서 username 가져오기
@@ -38,10 +40,11 @@ const ArticleView: React.FC = () => {
 
         try {
             const response = await getArticleById(authorId, articleId);
-            console.error('response', response.article)
+            console.log("detail article : ", response.article)
             setArticle(response.article);
             setIsFavorited(response.article.is_favorited);
             setFavoriteCount(response.article.favorite_count);
+            setIsFollowing(response.article.author.following);
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {
@@ -102,65 +105,17 @@ const ArticleView: React.FC = () => {
             }
         }
     };
-    //
-    //
-    // const likeArticle = async (authorId: string, articleId:string) => {
-    //     try {
-    //         const response = await likeArticle(authorId, articleId);
-    //
-    //     } catch (error) {
-    //         if (isApiErrorResponse(error)) {
-    //             if (error.error.code === 400) {
-    //                 console.error('Bad request in handleSelectTag', error)
-    //             } else if (error.error.code === 401 || error.error.code === 403) {
-    //                 // 인증이 유효하지 않습니다 다시 로그인해주세요 경고창과 함께 로그인 페이지로 이동
-    //                 logoutInLocalStorage()
-    //                 alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
-    //                 navigate('/login');
-    //             } else {
-    //                 console.error('Unknown error in handleSelectTag', error)
-    //             }
-    //             navigate('/'); // On error, redirect to home
-    //         } else {
-    //             console.error('Error fetching article:', error);
-    //             navigate('/'); // On error, redirect to home
-    //         }
-    //     }
-    // }
-    //
-    // // unlike
-    // const unLikeArticle = async (authorId: string, articleId:string) => {
-    //     try {
-    //         const response = await likeArticle(authorId, articleId);
-    //
-    //     } catch (error) {
-    //         if (isApiErrorResponse(error)) {
-    //             if (error.error.code === 400) {
-    //                 console.error('Bad request in handleSelectTag', error)
-    //             } else if (error.error.code === 401 || error.error.code === 403) {
-    //                 // 인증이 유효하지 않습니다 다시 로그인해주세요 경고창과 함께 로그인 페이지로 이동
-    //                 logoutInLocalStorage()
-    //                 alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
-    //                 navigate('/login');
-    //             } else {
-    //                 console.error('Unknown error in handleSelectTag', error)
-    //             }
-    //             navigate('/'); // On error, redirect to home
-    //         } else {
-    //             console.error('Error fetching article:', error);
-    //             navigate('/'); // On error, redirect to home
-    //         }
-    //     }
-    // }
 
     const toggleFavorite = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         try {
             if(isFavorited) {
-                await likeArticle(authorId || "", articleId || "");
+                console.log("좋아요 취소!")
+                await unlikeArticle(authorId|| "", articleId || "");
                 setFavoriteCount(favoriteCount - 1);
             } else {
-                await unlikeArticle(authorId|| "", articleId || "");
+                console.log("좋아요!!!")
+                await likeArticle(authorId || "", articleId || "");
                 setFavoriteCount(favoriteCount + 1);
             }
             setIsFavorited(!isFavorited); // 좋아요 상태 토글
@@ -183,6 +138,37 @@ const ArticleView: React.FC = () => {
             }
         }
     };
+
+    const toggleFollow = async (e: React.FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        try {
+            if(isFollowing) {
+                await unfollowUser(authorId || "");
+            } else {
+                await followUser(authorId || "");
+            }
+
+            setIsFollowing(!isFollowing); // 팔로우 상태 토글
+        } catch (error) {
+            if (isApiErrorResponse(error)) {
+                if (error.error.code === 400) {
+                    console.error('Bad request in handleSelectTag', error)
+                } else if (error.error.code === 401 || error.error.code === 403) {
+                    // 인증이 유효하지 않습니다 다시 로그인해주세요 경고창과 함께 로그인 페이지로 이동
+                    logoutInLocalStorage()
+                    alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
+                    navigate('/login');
+                } else {
+                    console.error('Unknown error in handleSelectTag', error)
+                }
+                //navigate('/'); // On error, redirect to home
+            } else {
+                console.error('Error fetching article:', error);
+                // navigate('/'); // On error, redirect to home
+            }
+        }
+    }
+
     return (
         <div className="overflow-auto">
             <div className="bg-slate-700 text-white py-10 px-4">
@@ -217,18 +203,10 @@ const ArticleView: React.FC = () => {
                         ) : (
                             // 다른 사용자의 게시글인 경우
                             <>
-                                <button className={`ml-3 mt-8 px-3 py-1 text-sm rounded-full border ${
-                                    article.author.following ? 'bg-green-500 text-white' : 'text-green-500 border-green-500'
-                                } hover:bg-green-500 hover:text-white transition-colors duration-300`}>
-                                    Follow
+                                <button onClick={toggleFollow} className={`ml-3 mt-8 px-3 py-1 text-sm rounded-full ${isFollowing ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white transition-colors duration-300`}>
+                                    {isFollowing ? 'Unfollow' : 'Follow'}
                                 </button>
-                                {/*<button*/}
-                                {/*    className={`ml-2 mt-8 px-3 py-1 text-sm rounded-full border ${*/}
-                                {/*    article.is_favorited ? 'bg-green-500 text-white' : 'text-green-500 border-green-500'*/}
-                                {/*} hover:bg-green-500 hover:text-white transition-colors duration-300`}*/}
-                                {/*    onClick={(e) => likeArticle(authorId || "", articleId || "",)}>*/}
-                                {/*    ♥ {article.favorite_count}*/}
-                                {/*</button>*/}
+
                                 <button
                                     className={`ml-2 mt-8 px-3 py-1 text-sm rounded-full border ${isFavorited ? 'bg-green-500 text-white' : 'text-green-500 border-green-500'} hover:bg-green-500 hover:text-white transition-colors duration-300`}
                                     onClick={toggleFavorite}>
@@ -237,19 +215,6 @@ const ArticleView: React.FC = () => {
                             </>
                         )}
 
-                        {/*/!* Follow Button *!/*/}
-                        {/*<button className={`ml-3 mt-7 px-3 py-1 text-sm rounded-full border ${*/}
-                        {/*    article.author.following ? 'bg-green-500 text-white' : 'text-green-500 border-green-500'*/}
-                        {/*} hover:bg-green-500 hover:text-white transition-colors duration-300`}>*/}
-                        {/*    Follow*/}
-                        {/*</button>*/}
-
-                        {/*/!* Favorite Button *!/*/}
-                        {/*<button className={`ml-4 mt-7 px-3 py-1 text-sm rounded-full border ${*/}
-                        {/*    article.is_favorited ? 'bg-green-500 text-white' : 'text-green-500 border-green-500'*/}
-                        {/*} hover:bg-green-500 hover:text-white transition-colors duration-300`}>*/}
-                        {/*    ♥ {article.favorite_count}*/}
-                        {/*</button>*/}
                     </div>
                 </div>
             </div>

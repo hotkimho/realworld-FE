@@ -3,9 +3,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArticleItemType } from "../../types/article";
 
-const ArticleItem: React.FC<{ article: ArticleItemType }> = ({ article }) => {
+const ArticleItem: React.FC<{
+    article: ArticleItemType;
+    toggleFavorite: (authorId:string, articleId: string, isFavorited: boolean) => void;
+}> = ({ article , toggleFavorite}) => {
     const trimmedBody = article.body.length > 100 ? `${article.body.substring(0, 100)}...` : article.body;
+    //get user_id in localsotrage
+    const userId = localStorage.getItem('user_id');
 
+    console.log("each article : ", article.article_id, " ", article.is_favorited, " ", article.favorite_count)
     return (
         <div className="bg-white p-4 mb-4 rounded shadow-sm">
             <div className="flex items-start justify-between">
@@ -20,11 +26,11 @@ const ArticleItem: React.FC<{ article: ArticleItemType }> = ({ article }) => {
                 </div>
                 <button
                     className={`flex items-center justify-center w-12 h-8 rounded-full ${
-                        article.is_favorited ? 'bg-green-500 text-white' : 'text-green-500 bg-white'
-                    } border-2 border-green-500 hover:bg-green-500 hover:text-white`}
+                        article.is_favorited ? 'bg-green-500 text-white' : 'bg-white text-green-500'
+                    } border border-green-500 hover:bg-green-500 hover:text-white transition-colors duration-300`}
+                    onClick={() => toggleFavorite(String(article.author.author_id), String(article.article_id), article.is_favorited)}
                 >
-                    {/* Here goes the heart icon */}
-                    <span className="text-green">♥{article.favorite_count}</span>
+                    ♥ {article.favorite_count}
                 </button>
             </div>
 
@@ -42,8 +48,8 @@ const ArticleItem: React.FC<{ article: ArticleItemType }> = ({ article }) => {
                 <div className="flex gap-2">
                     {article.tag_list && article.tag_list.map((tag, index) => (
                         <span key={index} className="bg-gray-200 text-gray-800 text-xs font-semibold px-2 py-1 rounded">
-              {tag}
-            </span>
+                            {tag}
+                        </span>
                     ))}
                 </div>
             </div>
