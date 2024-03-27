@@ -1,6 +1,6 @@
 // ArticleItem.tsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { ArticleItemType } from "../../types/article";
 
 const ArticleItem: React.FC<{
@@ -8,16 +8,22 @@ const ArticleItem: React.FC<{
     toggleFavorite: (authorId:string, articleId: string, isFavorited: boolean) => void;
 }> = ({ article , toggleFavorite}) => {
     const trimmedBody = article.body.length > 100 ? `${article.body.substring(0, 100)}...` : article.body;
-    //get user_id in localsotrage
-    const userId = localStorage.getItem('user_id');
+    const navigate = useNavigate();
 
-    console.log("each article : ", article.article_id, " ", article.is_favorited, " ", article.favorite_count)
+    const handleProfileClick = (username: string, articleId: string) => {
+        navigate(`/profile/${username}/${articleId}`);
+    };
+
     return (
         <div className="bg-white p-4 mb-4 rounded shadow-sm">
             <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
                     {article.author.profile_image && (
-                        <img src={article.author.profile_image} alt={article.author.username} className="w-12 h-12 rounded-full" />
+                        <img
+                            src={article.author.profile_image}
+                            alt={article.author.username} className="w-12 h-12 rounded-full"
+                            onClick={() => handleProfileClick(article.author.username, String(article.author.author_id))}
+                        />
                     )}
                     <div>
                         <h2 className="font-semibold">{article.author.username}</h2>

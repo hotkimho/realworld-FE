@@ -44,3 +44,13 @@ export interface ArticleUpdateType {
     tag_list?: string[];
     title: string;
 }
+
+// 작성자가 작성한 글 목록 조회 인터페이스
+export interface ArticleAuthorType {
+    articles: ArticleItemType[];
+}
+
+// 작성자가 작성한 글 중 좋아요 누른 글 목록 조회 인터페이스
+export interface ArticleAuthorFavoriteType {
+    articles: ArticleItemType[];
+}

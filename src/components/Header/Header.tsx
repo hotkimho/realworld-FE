@@ -43,7 +43,7 @@ const Header: React.FC = () => {
                             <Link to="/article" className="btn btn-ghost btn-sm rounded-btn">
                                 New Article
                             </Link>
-                            <Link to="/settings" className="btn btn-ghost btn-sm rounded-btn">
+                            <Link to="/profile" className="btn btn-ghost btn-sm rounded-btn">
                                 Settings
                             </Link>
                             <Link to={`/profile/${username}`} className="flex items-center gap-2">

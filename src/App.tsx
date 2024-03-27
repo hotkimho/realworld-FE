@@ -11,6 +11,8 @@ import ArticleView from "./components/Article/ArticleView";
 import Footer from "./components/Footer/Footer";
 import ArticleCreate from "./components/Article/ArticleCreate";
 import ArticleEdit from "./components/Article/ArticleEdit";
+import ProfileSettings from "./components/Profile/ProfileSettings";
+import ProfilePage from "./components/Profile/ProfilePage";
 
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
                       <Route path="/user/:authorId/article/:articleId" element={<ArticleView />} />
                       <Route path="/user/:authorId/article/:articleId/edit" element={<ArticleEdit />} />
 
+                      <Route path="/profile" element={<ProfileSettings />} />
+                        <Route path="/profile/:username/:articleId" element={<ProfilePage />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
                       <Route path="/article" element={<ArticleCreate />} />

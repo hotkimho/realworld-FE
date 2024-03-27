@@ -2,7 +2,7 @@ import {SignInResponse} from "../types/auth";
 import axios from "axios";
 import {BASE_URL} from "../config/config";
 import {ApiErrorResponse} from "../types/error";
-import {ArticleCreateType, ArticleDetailType, ArticleListType} from "../types/article";
+import {ArticleAuthorType, ArticleCreateType, ArticleDetailType, ArticleListType} from "../types/article";
 
 
 
@@ -166,6 +166,56 @@ export const deleteArticle = async (articleId:string): Promise<ArticleDetailType
                 "Content-Type": "application/json",
                 Authorization: `${localStorage.getItem("access_token")}`,
             }
+        });
+
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw {
+                error: {
+                    code: error.response?.data.error.code,
+                    message: error.response?.data.error.message,
+                }
+            } as ApiErrorResponse;
+        }
+
+        throw new Error("알 수 없는 에러가 발생했습니다.")
+    }
+}
+
+// author가 작성한 글 목록 리스트 조회
+export const getArticlesByAuthor = async (authorId:string): Promise<ArticleAuthorType> => {
+    try {
+        const response = await axios.get<ArticleAuthorType>(`${BASE_URL}/user/${authorId}/articles`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `${localStorage.getItem("access_token")}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw {
+                error: {
+                    code: error.response?.data.error.code,
+                    message: error.response?.data.error.message,
+                }
+            } as ApiErrorResponse;
+        }
+
+        throw new Error("알 수 없는 에러가 발생했습니다.")
+    }
+}
+
+// author가 작성한 글에 좋아요누른 글 목록 리스트 조회
+export const getFavoritedArticlesByAuthor = async (authorId:string): Promise<ArticleAuthorType> => {
+    try {
+        const response = await axios.get<ArticleAuthorType>(`${BASE_URL}/user/${authorId}/articles/like`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `${localStorage.getItem("access_token")}`,
+            },
         });
 
         return response.data;
