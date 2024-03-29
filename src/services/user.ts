@@ -7,6 +7,7 @@ import axios from "axios";
 // 이메일 중복 검사
 export const VerifyEmail = async (email: string): Promise<VerifyEmailResponse> => {
     try {
+        console.log("???")
         const response = await axios.post<VerifyEmailResponse>(`${BASE_URL}/user/verify-email`, {email},{
             headers: {
                 "Content-Type": "application/json",
@@ -15,7 +16,9 @@ export const VerifyEmail = async (email: string): Promise<VerifyEmailResponse> =
 
         return response.data;
     } catch (error) {
+        console.log("걸리긴 하는거지?")
         if (axios.isAxiosError(error)) {
+            console.log(error.response?.data)
             throw {
                 error: {
                     code: error.response?.data.error.code,

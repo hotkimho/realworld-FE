@@ -57,6 +57,7 @@ const Register: React.FC = () => {
         try {
             if (!usernameInvalid)  {
                 const response =  await VerifyUsername(formData.username);
+                console.log("user response : ", response)
                 setUsernameDuplicate(false)
             }
 
@@ -75,15 +76,18 @@ const Register: React.FC = () => {
         try {
             if (!emailInvalid) {
                 const response = await VerifyEmail(formData.email);
+                console.log("email response : ", response)
                 setEmailDuplicate(false)
             }
 
         } catch (error) {
             if (isApiErrorResponse(error)) {
+                console.log("걸려찌??")
                 if (error.error.code === 400) {
                     console.log("이메일 유효하지않음")
                 }
                 if (error.error.code === 409) {
+                    console.log("응응")
                     setEmailDuplicate(true)
                 }
             }
@@ -126,6 +130,7 @@ const Register: React.FC = () => {
 
                     </div>
                     <div>
+                        <div>tttt {emailDuplicate}</div>
                         <label htmlFor="email" className="text-sm font-medium text-gray-700">Email</label>
                         <input type="email" id="email" name="email" required
                                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"

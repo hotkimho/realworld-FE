@@ -12,7 +12,7 @@ export const createComment = async (authorId: string, articleId: string, body: s
         }, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 
@@ -58,12 +58,16 @@ export const getCommentListByArticleId = async (authorId:string, articleId: stri
 // update Comment
 export const updateComment = async (authorId: string, articleId: string, commentId: string, body: string): Promise<CommentUpdateType> => {
     try {
+        console.log("authorId", authorId)
+        console.log("articleId", articleId)
+        console.log("commentId", commentId)
+        console.log("body", body)
         const response = await axios.put<CommentUpdateType>(`${BASE_URL}/user/${authorId}/article/${articleId}/comment/${commentId}`, {
             body,
         }, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 
@@ -88,7 +92,7 @@ export const deleteComment = async (authorId: string, articleId: string, comment
         const response = await axios.delete<CommentUpdateType>(`${BASE_URL}/user/${authorId}/article/${articleId}/comment/${commentId}`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 

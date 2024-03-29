@@ -13,7 +13,7 @@ export const getArticles = async (offset: number): Promise<ArticleListType> => {
         const response = await axios.get<ArticleListType>(`${BASE_URL}/articles`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
             params: {
                 limit: 10,
@@ -44,7 +44,7 @@ export const getArticlesByTag = async (tag: string, offset: number): Promise<Art
         const response = await axios.get<ArticleListType>(`${BASE_URL}/articles/tag`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
             params: {
                 limit: 10,
@@ -76,7 +76,7 @@ export const getArticleById = async (authorId:string, articleId:string): Promise
         const response = await axios.get<ArticleDetailType>(`${BASE_URL}/user/${authorId}/article/${articleId}`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
         });
 
@@ -109,7 +109,7 @@ export const createArticle = async (request:ArticleCreateType): Promise<ArticleD
         }, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 
@@ -139,7 +139,7 @@ export const updateArticle = async (articleId:string, request:ArticleCreateType)
         }, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 
@@ -164,7 +164,7 @@ export const deleteArticle = async (articleId:string): Promise<ArticleDetailType
         const response = await axios.delete<ArticleDetailType>(`${BASE_URL}/article/${articleId}`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 
@@ -187,9 +187,13 @@ export const deleteArticle = async (articleId:string): Promise<ArticleDetailType
 export const getArticlesByAuthor = async (authorId:string): Promise<ArticleAuthorType> => {
     try {
         const response = await axios.get<ArticleAuthorType>(`${BASE_URL}/user/${authorId}/articles`, {
+            params: {
+                limit: 1000, // 작성글 목록은 임시로 모든걸 조회
+                page: 1,
+            },
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
         });
 
@@ -214,7 +218,7 @@ export const getFavoritedArticlesByAuthor = async (authorId:string): Promise<Art
         const response = await axios.get<ArticleAuthorType>(`${BASE_URL}/user/${authorId}/articles/like`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
         });
 

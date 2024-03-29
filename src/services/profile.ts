@@ -7,15 +7,13 @@ import {ApiErrorResponse} from "../types/error";
 
 export const getProfile = async (username: string): Promise<getProfileType> => {
     try {
-        // url : "base-url/profile"
-        // query : username
         const response = await axios.get<getProfileType>(`${BASE_URL}/profile`, {
             params: {
                 username: username
             },
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 
@@ -48,7 +46,7 @@ export const updateProfile = async (request:updateProfileType): Promise<getProfi
             , {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 

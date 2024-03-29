@@ -10,7 +10,7 @@ export const likeAr2ticle = async (authorId:string, articleId: string): Promise<
             {},{
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.getItem("access_token")}`,
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                 }
             });
 
@@ -36,7 +36,7 @@ export const followUser = async (followedId: string): Promise<void> => {
         const response = await axios.post<void>(`${BASE_URL}/user/follow/${followedId}`, {}, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 
@@ -62,7 +62,7 @@ export const unfollowUser = async (followedId: string): Promise<void> => {
         const response = await axios.delete<void>(`${BASE_URL}/user/follow/${followedId}`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 

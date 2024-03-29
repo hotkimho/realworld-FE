@@ -12,7 +12,7 @@ export const likeArticle = async (authorId:string, articleId: string): Promise<v
             {},{
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 
@@ -37,7 +37,7 @@ export const unlikeArticle = async (authorId:string, articleId: string): Promise
         const response = await axios.delete<void>(`${BASE_URL}/user/${authorId}/article/${articleId}/like`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("access_token")}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             }
         });
 
