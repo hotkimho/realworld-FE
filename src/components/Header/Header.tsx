@@ -39,7 +39,7 @@ const Header: React.FC = () => {
                     </Link>
 
                     {isLogin ? (
-                        <>x
+                        <>
                             <Link to="/article" className="btn btn-ghost btn-sm rounded-btn">
                                 New Article
                             </Link>

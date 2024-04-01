@@ -36,6 +36,36 @@ export const getArticles = async (offset: number): Promise<ArticleListType> => {
     }
 }
 
+
+export const getMyArticles = async (offset: number): Promise<ArticleListType> => {
+    try {
+        // query param limit=10 추가
+        const response = await axios.get<ArticleListType>(`${BASE_URL}/my/articles`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+            params: {
+                limit: 10,
+                page: offset,
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw {
+                error: {
+                    code: error.response?.data.error.code,
+                    message: error.response?.data.error.message,
+                }
+            } as ApiErrorResponse;
+        }
+
+        throw new Error("알 수 없는 에러가 발생했습니다.")
+    }
+}
+
 // getarticle by tag
 export const getArticlesByTag = async (tag: string, offset: number): Promise<ArticleListType> => {
     try {
@@ -72,7 +102,6 @@ export const getArticlesByTag = async (tag: string, offset: number): Promise<Art
 export const getArticleById = async (authorId:string, articleId:string): Promise<ArticleDetailType> => {
     try {
 
-        // query param limit=10 추가
         const response = await axios.get<ArticleDetailType>(`${BASE_URL}/user/${authorId}/article/${articleId}`, {
             headers: {
                 "Content-Type": "application/json",

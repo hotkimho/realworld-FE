@@ -23,3 +23,7 @@ export interface SignInResponse {
         username: string;
     }
 }
+
+export interface RefreshTokenResponse {
+    token:string
+}

@@ -5,10 +5,12 @@ import ArticleItem from './ArticleItem';
 import { ArticleListType } from "../../types/article";
 import FeedTab from "./FeedTab";
 import Pagination from "./Pagination";
-import {getArticles, getArticlesByTag} from "../../services/article";
+import {getArticles, getArticlesByTag, getMyArticles} from "../../services/article";
 import PopularTag from "./PopularTag";
 import {isApiErrorResponse} from "../../types/error";
 import {likeArticle, unlikeArticle} from "../../services/articleLike";
+import {checkTokenExpiration, logoutInLocalStorage} from "../../Util/auth";
+import {RefreshToken} from "../../services/user";
 
 
 const ArticleList: React.FC = () => {
@@ -18,21 +20,63 @@ const ArticleList: React.FC = () => {
 
     const fetchArticles = async () => {
         try {
-            const response = await getArticles(currentPage + 1);
-            setArticles(response.articles);
-            console.log("in fetchArticles : ", response.articles)
+            console.log("activeTab : ", activeTab)
+            if (activeTab === 'all') {
+                const response = await getArticles(currentPage + 1);
+                setArticles(response.articles);
+            } else {
+                const response = await getMyArticles(currentPage + 1);
+                console.log("my articles : ", response.articles)
+                setArticles(response.articles);
+            }
+
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {
-                    console.error('Bad request in handleSelectTag', error)
+                    console.error('Bad request in fetchArticles ', error)
+                } else if (error.error.code === 401 || error.error.code === 403) {
+                    logoutInLocalStorage()
+                    alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
+                    window.location.href = '/login';
                 } else {
                     console.error('Unknown error in handleSelectTag', error)
                 }
             }
         }
     };
+
+    const CheckAuthorization = async () => {
+        const accessToken = localStorage.getItem('access_token');
+        if (accessToken && checkTokenExpiration(accessToken)) {
+            // 토큰이 만료되었을 경우 refresh token으로 재발급
+            const refreshToken = localStorage.getItem('refresh_token');
+            if (refreshToken && checkTokenExpiration(refreshToken)) {
+                alert('로그인이 만료되었습니다. 다시 로그인해주세요.')
+                window.location.href = '/login';
+                return;
+            }
+
+            try {
+                const response = await RefreshToken(refreshToken||'');
+                localStorage.setItem('access_token', response.token);
+                alert("토큰이 재발급되었습니다.")
+            } catch (error) {
+                if (isApiErrorResponse(error)) {
+                    if (error.error.code === 400) {
+                        console.error('Bad request in fetchArticles ', error)
+                    } else {
+                        logoutInLocalStorage()
+                        alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
+                        window.location.href = '/login';
+                    }
+                }
+            }
+        }
+    }
     useEffect(() => {
         fetchArticles();
+        CheckAuthorization();
+
     }, [activeTab, currentPage]);
 
     // 탭 변경 핸들러
