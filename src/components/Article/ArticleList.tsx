@@ -102,6 +102,13 @@ const ArticleList: React.FC = () => {
     };
 
     const toggleFavorite = async (authorId:string, articleId: string, isFavorited: boolean) => {
+        // access_token이 없을 경우 /login으로 이동
+        const accessToken = localStorage.getItem('access_token');
+        if (!accessToken) {
+            window.location.href = '/login';
+            return;
+        }
+
         if (isFavorited) {
             await unlikeArticle(authorId , articleId);
         } else {

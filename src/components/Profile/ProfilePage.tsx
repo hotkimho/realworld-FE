@@ -79,19 +79,13 @@ const ProfilePage: React.FC = () => {
         if (!isLoggedIn) {
             navigate("/login");
         } else {
-            console.log("profile", profile?.user)
-            console.log("profile", profile?.user.user_id)
-            console.log("isFollowing", isFollowing)
             if (isFollowing) {
-                console.log("followUser :", profile?.user.user_id)
                 await unfollowUser(profile?.user.user_id || '');
             } else {
-                console.log("UnfollowUser :", profile?.user.user_id)
                 await followUser(profile?.user.user_id || '');
             }
             setIsFollowing(!isFollowing);
             fetchProfile();
-            // Optionally, fetch profile again to update the follow status
         }
     };
 

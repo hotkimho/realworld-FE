@@ -42,25 +42,6 @@ function App() {
           </div>
       </Router>
 
-      // <Router>
-      //   <div>
-      //     <Header />
-      //     <Routes>
-      //         <Route path="/" element={
-      //             <>
-      //                 <HeroImage />
-      //                 <ArticleList />
-      //             </>
-      //         } />
-      //       {/*<Route path="/" element={<Home />} />*/}
-      //         <Route path="/user/:authorId/article/:articleId" element={<ArticleView />} />
-      //       <Route path="/login" element={<Login />} />
-      //       <Route path="/register" element={<Register />} />
-      //     </Routes>
-      //       <Footer />
-      //
-      //   </div>
-      // </Router>
   );
 }
 
