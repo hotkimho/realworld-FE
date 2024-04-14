@@ -24,7 +24,6 @@ const ProfileSettings = () => {
                 // get username in localStorage
                 const username = localStorage.getItem('username');
                 const response = await getProfile(username||"");
-                console.log("in fetchProfile : ", response.user)
                 setProfile(response);
                 setFormData({
                     bio: response.user.bio,

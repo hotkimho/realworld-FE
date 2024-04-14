@@ -20,26 +20,22 @@ const ArticleList: React.FC = () => {
 
     const fetchArticles = async () => {
         try {
-            console.log("activeTab : ", activeTab)
             if (activeTab === 'all') {
                 const response = await getArticles(currentPage + 1);
                 setArticles(response.articles);
             } else {
                 const response = await getMyArticles(currentPage + 1);
-                console.log("my articles : ", response.articles)
                 setArticles(response.articles);
             }
 
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {
-                    console.error('Bad request in fetchArticles ', error)
                 } else if (error.error.code === 401 || error.error.code === 403) {
                     logoutInLocalStorage()
                     alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
                     window.location.href = '/login';
                 } else {
-                    console.error('Unknown error in handleSelectTag', error)
                 }
             }
         }
@@ -63,7 +59,6 @@ const ArticleList: React.FC = () => {
             } catch (error) {
                 if (isApiErrorResponse(error)) {
                     if (error.error.code === 400) {
-                        console.error('Bad request in fetchArticles ', error)
                     } else {
                         logoutInLocalStorage()
                         alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
@@ -81,7 +76,6 @@ const ArticleList: React.FC = () => {
 
     // 탭 변경 핸들러
     const handleTabChange = (tab: 'all' | 'user') => {
-        console.log("in handleTabChange : ", tab)
         setActiveTab(tab);
         setCurrentPage(0); // 탭을 변경하면 페이지를 처음으로 리셋
     };
@@ -93,9 +87,9 @@ const ArticleList: React.FC = () => {
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {
-                    console.error('Bad request in handleSelectTag', error)
+                    // console.error('Bad request in handleSelectTag', error)
                 } else {
-                    console.error('Unknown error in handleSelectTag', error)
+                    // console.error('Unknown error in handleSelectTag', error)
                 }
             }
         }

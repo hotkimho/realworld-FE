@@ -57,14 +57,12 @@ const Register: React.FC = () => {
         try {
             if (!usernameInvalid)  {
                 const response =  await VerifyUsername(formData.username);
-                console.log("user response : ", response)
                 setUsernameDuplicate(false)
             }
 
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {
-                    console.log("유저네임 유효하지않음")
                 }
                 if (error.error.code === 409) {
                     setUsernameDuplicate(true)
@@ -76,18 +74,14 @@ const Register: React.FC = () => {
         try {
             if (!emailInvalid) {
                 const response = await VerifyEmail(formData.email);
-                console.log("email response : ", response)
                 setEmailDuplicate(false)
             }
 
         } catch (error) {
             if (isApiErrorResponse(error)) {
-                console.log("걸려찌??")
                 if (error.error.code === 400) {
-                    console.log("이메일 유효하지않음")
                 }
                 if (error.error.code === 409) {
-                    console.log("응응")
                     setEmailDuplicate(true)
                 }
             }
@@ -99,17 +93,14 @@ const Register: React.FC = () => {
             // 이렇게 5개 갑 비교말고 좋은 방법이 있을까?
             if (!usernameInvalid && !emailInvalid && !passwordInvalid && !usernameDuplicate && !emailDuplicate) {
                 const response = await SignUp(formData.email, formData.username, formData.password);
-                console.log(response.user);
 
                 navigate('/');
             }
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {
-                    console.log("signup code 400")
                     // 회원가입 실패 로직
                 } else if (error.error.code === 422) {
-                    console.log("signup code 422")
                     // 중복된 유저네임 또는 이메일 로직
 
                 }
@@ -130,7 +121,7 @@ const Register: React.FC = () => {
 
                     </div>
                     <div>
-                        <div>tttt {emailDuplicate}</div>
+                        <div>{emailDuplicate}</div>
                         <label htmlFor="email" className="text-sm font-medium text-gray-700">Email</label>
                         <input type="email" id="email" name="email" required
                                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
@@ -139,7 +130,7 @@ const Register: React.FC = () => {
 
                     </div>
                     <div>
-                        <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
+                        <label htmlFor="password" className="text-sm font-medium text-gray-700">Password(길이 제한 없음)</label>
                         <input type="password" id="password" name="password" required
                                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                                value={formData.password} onChange={handleInputChange} />

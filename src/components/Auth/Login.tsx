@@ -43,7 +43,6 @@ const Login: React.FC = () => {
         try {
             // 로그인 API 호출 (예시 URL 및 메소드)
             const response = await SignIn(formData.email, formData.password);
-            console.log("response : ", response.user)
             // 로그인 성공: 토큰 저장, 홈 페이지로 리디렉션 등의 처리
             localStorage.setItem('access_token', response.user.access_token);
             localStorage.setItem('refresh_token', response.user.refresh_token);
@@ -52,7 +51,6 @@ const Login: React.FC = () => {
 
             window.dispatchEvent(new Event('loginSuccess'));
 
-            console.log("로그인 성공 : ", response.user);
             navigate('/'); // 홈 페이지로 리디렉션
         } catch (error) {
             console.error('Login error', error);

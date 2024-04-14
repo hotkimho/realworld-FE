@@ -44,7 +44,6 @@ const ArticleCreate: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            console.log("create article request : ", article);
             const response = await createArticle(article);
 
             // articleview 페이지로 이동
@@ -52,18 +51,15 @@ const ArticleCreate: React.FC = () => {
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {
-                    console.error('Bad request in handleSelectTag', error)
                 } else if (error.error.code === 401 || error.error.code === 403) {
                     // 인증이 유효하지 않습니다 다시 로그인해주세요 경고창과 함께 로그인 페이지로 이동
                     logoutInLocalStorage()
                     alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
                     window.location.href = '/login';
                 } else {
-                    console.error('Unknown error in handleSelectTag', error)
                 }
             }
         }
-        console.log(article);
     };
 
     return (
