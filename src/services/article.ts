@@ -8,7 +8,6 @@ import {ArticleAuthorType, ArticleCreateType, ArticleDetailType, ArticleListType
 
 export const getArticles = async (offset: number): Promise<ArticleListType> => {
     try {
-        console.log("offset : ", offset)
         // query param limit=10 추가
         const response = await axios.get<ArticleListType>(`${BASE_URL}/articles`, {
             headers: {
@@ -68,9 +67,7 @@ export const getMyArticles = async (offset: number): Promise<ArticleListType> =>
 
 // getarticle by tag
 export const getArticlesByTag = async (tag: string, offset: number): Promise<ArticleListType> => {
-    try {
-        console.log("in getArticlesByTag : ", offset)
-        // query param limit=10 추가
+    try {// query param limit=10 추가
         const response = await axios.get<ArticleListType>(`${BASE_URL}/articles/tag`, {
             headers: {
                 "Content-Type": "application/json",

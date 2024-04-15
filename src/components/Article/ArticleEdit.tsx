@@ -32,18 +32,15 @@ const ArticleEdit: React.FC = () => {
             } catch (error) {
                 if (isApiErrorResponse(error)) {
                     if (error.error.code === 400) {
-                        console.error('Bad request in handleSelectTag', error)
                     } else if (error.error.code === 401 || error.error.code === 403) {
                         // 인증이 유효하지 않습니다 다시 로그인해주세요 경고창과 함께 로그인 페이지로 이동
                         logoutInLocalStorage()
                         alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
                         window.location.href = '/login';
                     } else {
-                        console.error('Unknown error in handleSelectTag', error)
                     }
                     navigate('/'); // On error, redirect to home
                 } else {
-                    console.error('Error fetching article:', error);
                     navigate('/'); // On error, redirect to home
                 }
 
@@ -78,7 +75,6 @@ const ArticleEdit: React.FC = () => {
             await updateArticle(articleId, article);
             navigate(`/user/${authorId}/article/${articleId}`); // Redirect to the updated article page
         } catch (error) {
-            console.error('Error updating article:', error);
         }
     };
 

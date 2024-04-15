@@ -54,21 +54,18 @@ const ProfilePage: React.FC = () => {
         if (!username) return;
         try {
             const profileData = await getProfile(username);
-            console.log("profileData2222", profileData)
             setProfile(profileData);
             setIsFollowing(profileData.user.following);
             // authorId = profileData.user.userId;
         } catch (error) {
             if (isApiErrorResponse(error)) {
                 if (error.error.code === 400) {
-                    console.error('Bad request in handleSelectTag', error)
                 } else if (error.error.code === 401 || error.error.code === 403) {
                     // 인증이 유효하지 않습니다 다시 로그인해주세요 경고창과 함께 로그인 페이지로 이동
                     logoutInLocalStorage()
                     alert('인증이 유효하지 않습니다. 다시 로그인해주세요 : ' + error.error.message);
                     window.location.href = '/login';
                 } else {
-                    console.error('Unknown error in handleSelectTag', error)
                 }
             }
         }

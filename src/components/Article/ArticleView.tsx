@@ -40,7 +40,6 @@ const ArticleView: React.FC = () => {
 
         try {
             const response = await getArticleById(authorId, articleId);
-            console.log("detail article : ", response.article)
             setArticle(response.article);
             setIsFavorited(response.article.is_favorited);
             setFavoriteCount(response.article.favorite_count);
@@ -110,11 +109,9 @@ const ArticleView: React.FC = () => {
         e.preventDefault();
         try {
             if(isFavorited) {
-                console.log("좋아요 취소!")
                 await unlikeArticle(authorId|| "", articleId || "");
                 setFavoriteCount(favoriteCount - 1);
             } else {
-                console.log("좋아요!!!")
                 await likeArticle(authorId || "", articleId || "");
                 setFavoriteCount(favoriteCount + 1);
             }
