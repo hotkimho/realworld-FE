@@ -48,7 +48,7 @@ const ArticleList: React.FC = () => {
             const refreshToken = localStorage.getItem('refresh_token');
             if (refreshToken && checkTokenExpiration(refreshToken)) {
                 logoutInLocalStorage()
-                // window.location.href = '/login';
+                window.location.href = '/login';
                 return;
             }
 
