@@ -51,8 +51,8 @@ const ArticleList: React.FC = () => {
             // 토큰이 만료되었을 경우 refresh token으로 재발급
             const refreshToken = localStorage.getItem('refresh_token');
             if (refreshToken && checkTokenExpiration(refreshToken)) {
-                alert('로그인이 만료되었습니다. 다시 로그인해주세요.')
-                window.location.href = '/login';
+                logoutInLocalStorage()
+                // window.location.href = '/login';
                 return;
             }
 
