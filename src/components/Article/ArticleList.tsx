@@ -82,7 +82,7 @@ const ArticleList: React.FC = () => {
 
     const handleSelectTag = async (tag: string) => {
         try {
-            const response = await getArticlesByTag(tag, currentPage); // 이 함수는 구현되어야 합니다.
+            const response = await getArticlesByTag(tag, currentPage);
             setArticles(response.articles);
         } catch (error) {
             if (isApiErrorResponse(error)) {

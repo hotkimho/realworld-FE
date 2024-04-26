@@ -4,10 +4,10 @@ import {BASE_URL} from "../config/config";
 import {ApiErrorResponse} from "../types/error";
 import {PresignedUrlType} from "../types/s3Service";
 
-export const getPresignedUrl = async (authorId: string, articleId: string, key: string): Promise<PresignedUrlType> => {
+export const getPresignedUrl = async (authorId: string, key: string): Promise<PresignedUrlType> => {
     try {
         // query param limit=10 추가
-        const response = await axios.get<PresignedUrlType>(`${BASE_URL}/user/${authorId}/article/${articleId}/upload`, {
+        const response = await axios.get<PresignedUrlType>(`${BASE_URL}/user/${authorId}/article/upload`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("access_token")}`,
