@@ -157,6 +157,7 @@ export const createArticle = async (request:ArticleCreateType): Promise<ArticleD
 // article 수정 api
 export const updateArticle = async (articleId:string, request:ArticleCreateType): Promise<ArticleDetailType> => {
     try {
+        console.log(request)
         const response = await axios.put<ArticleDetailType>(`${BASE_URL}/article/${articleId}`, {
             "title": request.title,
             "description": request.description,

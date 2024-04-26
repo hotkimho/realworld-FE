@@ -7,7 +7,7 @@ const ArticleItem: React.FC<{
     article: ArticleItemType;
     toggleFavorite: (authorId:string, articleId: string, isFavorited: boolean) => void;
 }> = ({ article , toggleFavorite}) => {
-    const trimmedBody = article.body.length > 100 ? `${article.body.substring(0, 100)}...` : article.body;
+    const trimmedBody = article.description.length > 100 ? `${article.description.substring(0, 100)}...` : article.description;
     const navigate = useNavigate();
 
     const handleProfileClick = (username: string, articleId: string) => {

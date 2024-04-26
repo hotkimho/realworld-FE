@@ -23,7 +23,6 @@ const ArticleCreate: React.FC = () => {
     });
     const [tagInput, setTagInput] = useState('');
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
-    const imageInputRef = useRef<HTMLInputElement | null>(null);
 
 
 
@@ -52,6 +51,7 @@ const ArticleCreate: React.FC = () => {
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        console.log("qweqwe")
         e.preventDefault();
         try {
             const response = await createArticle(article);

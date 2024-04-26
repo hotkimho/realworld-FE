@@ -221,7 +221,7 @@ const ArticleView: React.FC = () => {
             {/* 본문 */}
             <div className="container mx-auto py-6 px-4">
                 {/*<p className="my-4 whitespace-pre-line">{article.body}</p>*/}
-                <ReactMarkdown>
+                <ReactMarkdown  className="prose">
                     {article.body}
                 </ReactMarkdown>
 
