@@ -23,6 +23,8 @@ const ArticleCreate: React.FC = () => {
     });
     const [tagInput, setTagInput] = useState('');
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    const imageInputRef = useRef<HTMLInputElement | null>(null);
+
 
 
     if (!localStorage.getItem('access_token')) {
@@ -75,9 +77,14 @@ const ArticleCreate: React.FC = () => {
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        // get filename
+        if (file.size > 10 * 1024 * 1024) {
+            alert('10MB 이하의 파일만 업로드 가능합니다.');
+            return;
+        }
 
-        const filename = uuidv4() + ".png";
+        const lastDot = file.name.lastIndexOf('.');
+        const ext = file.name.substring(lastDot + 1);
+        const filename = uuidv4() + "." + ext;
 
         // localstorage에 있는 access_token안에 있는 user_id를 가져온다.
         const user_id = localStorage.getItem('user_id')
@@ -121,6 +128,7 @@ const ArticleCreate: React.FC = () => {
         }
     };
 
+
     return (
         <div className="container mx-auto p-4">
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -141,8 +149,14 @@ const ArticleCreate: React.FC = () => {
                 <div className="form-control">
                     <label className="label">
                         <span className="label-text">Body</span>
+                        <input
+                            type="file"
+                            onChange={handleFileUpload}
+                            accept="image/jpg, image/png, image/jpeg"
+                            className="cursor-pointer bg-gray-100 border border-gray-300 p-2 rounded hover:bg-gray-200 text-sm"
+                        />
                     </label>
-                    <input type="file" onChange={handleFileUpload} className="input input-bordered w-full"></input>
+
                     <div className="flex">
                         <div className="flex-1 p-2">
                         <textarea
@@ -157,7 +171,7 @@ const ArticleCreate: React.FC = () => {
                         </div>
                         <div className="flex-1 p-2">
                             <div className="border rounded p-2 overflow-y-auto" style={{ height: '100%' }}>
-                                <ReactMarkdown>{article.body}</ReactMarkdown>
+                                <ReactMarkdown  className="prose">{article.body}</ReactMarkdown>
 
                             </div>
                         </div>

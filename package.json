@@ -49,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.12",
     "@types/react-router-dom": "^5.3.3",
     "autoprefixer": "^10.4.19",
     "daisyui": "^4.7.3",
