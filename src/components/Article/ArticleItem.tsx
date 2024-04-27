@@ -6,7 +6,8 @@ import { ArticleItemType } from "../../types/article";
 const ArticleItem: React.FC<{
     article: ArticleItemType;
     toggleFavorite: (authorId:string, articleId: string, isFavorited: boolean) => void;
-}> = ({ article , toggleFavorite}) => {
+    onSelectTag: (tag: string) => void;
+}> = ({ article , toggleFavorite, onSelectTag}) => {
     const trimmedBody = article.description.length > 100 ? `${article.description.substring(0, 100)}...` : article.description;
     const navigate = useNavigate();
 
@@ -53,7 +54,9 @@ const ArticleItem: React.FC<{
                 </Link>
                 <div className="flex gap-2">
                     {article.tag_list && article.tag_list.map((tag, index) => (
-                        <span key={index} className="bg-gray-200 text-gray-800 text-xs font-semibold px-2 py-1 rounded">
+                        <span key={index}
+                              className="bg-gray-200 text-gray-800 text-xs font-semibold px-2 py-1 rounded hover:bg-gray-300"
+                              onClick={() => onSelectTag(tag)}>
                             {tag}
                         </span>
                     ))}

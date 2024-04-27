@@ -54,3 +54,7 @@ export interface ArticleAuthorType {
 export interface ArticleAuthorFavoriteType {
     articles: ArticleItemType[];
 }
+
+export interface ArticlePopularTagType {
+    tags: string[];
+}
