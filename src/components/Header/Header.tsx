@@ -29,7 +29,14 @@ const Header: React.FC = () => {
     return (
         <nav className="bg-gray-800 text-white p-4">
             <div className="container mx-auto flex justify-between items-center">
-                <Link to="/" className="flex items-center">
+                <Link to="/"
+                      className="flex items-center"
+                      onClick={(e) => {
+                          e.preventDefault(); // 기본 링크 동작 방지
+                          window.location.href = '/'; // 현재 페이지로 이동
+                          window.location.reload(); // 페이지 새로고침
+                      }}
+                >
                     <span className="font-semibold text-xl tracking-tight">Conduit</span>
                 </Link>
 

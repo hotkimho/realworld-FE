@@ -81,8 +81,9 @@ const ArticleList: React.FC = () => {
     };
 
     const handleSelectTag = async (tag: string) => {
+
         try {
-            const response = await getArticlesByTag(tag, currentPage); // 이 함수는 구현되어야 합니다.
+            const response = await getArticlesByTag(tag, currentPage);
             setArticles(response.articles);
         } catch (error) {
             if (isApiErrorResponse(error)) {
@@ -125,12 +126,13 @@ const ArticleList: React.FC = () => {
                             key={article.article_id}
                             article={article}
                             toggleFavorite={toggleFavorite}
+                            onSelectTag={handleSelectTag}
                         />
                     ))}
 
                 </div>
                 <div className="h-2/4">
-                    <PopularTag tags={['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7']} onSelectTag={handleSelectTag} /> {/* 우측 사이드바 */}
+                    <PopularTag onSelectTag={handleSelectTag} />
 
                 </div>
             </div>

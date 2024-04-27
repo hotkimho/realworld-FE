@@ -127,6 +127,7 @@ const ProfilePage: React.FC = () => {
                         key={article.article_id}
                         article={article}
                         toggleFavorite={toggleFavorite}
+                        onSelectTag={() => {}}
                     />
                 ))}
             </div>

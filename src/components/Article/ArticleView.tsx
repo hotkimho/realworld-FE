@@ -12,6 +12,8 @@ import {getCommentListByArticleId} from "../../services/comment";
 import {CommentListType} from "../../types/comment";
 import {likeArticle, unlikeArticle} from "../../services/articleLike";
 import {followUser, unfollowUser} from "../../services/follow";
+import ReactMarkdown from "react-markdown";
+
 
 const ArticleView: React.FC = () => {
     const [article, setArticle] = useState<ArticleDetailType['article'] | null>(null);
@@ -218,7 +220,11 @@ const ArticleView: React.FC = () => {
 
             {/* 본문 */}
             <div className="container mx-auto py-6 px-4">
-                <p className="my-4 whitespace-pre-line">{article.body}</p>
+                {/*<p className="my-4 whitespace-pre-line">{article.body}</p>*/}
+                <ReactMarkdown  className="prose">
+                    {article.body}
+                </ReactMarkdown>
+
                 <div className="flex flex-wrap my-4">
                     {article.tag_list?.map((tag, index) => (
                         <span key={index} className="bg-gray-200 text-gray-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">

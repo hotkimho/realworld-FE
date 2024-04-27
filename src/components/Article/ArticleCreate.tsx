@@ -1,9 +1,17 @@
 // ArticleCreate.tsx
-import React, { useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {ArticleCreateType} from "../../types/article";
-import {createArticle} from "../../services/article";
+import {createArticle, getArticlesByTag} from "../../services/article";
 import {isApiErrorResponse} from "../../types/error";
 import {logoutInLocalStorage} from "../../Util/auth";
+import {uploadImageToS3} from "../../Util/file";
+import {getPresignedUrl} from "../../services/s3Service";
+
+import { v4 as uuidv4 } from 'uuid';
+import ReactMarkdown from "react-markdown";
+import {ARTICLE_BUCKET, REGION} from "../../config/config";
+
+
 
 //const ArticleCreate: React.FC = () => {
 const ArticleCreate: React.FC = () => {
@@ -14,10 +22,11 @@ const ArticleCreate: React.FC = () => {
         tag_list: [],
     });
     const [tagInput, setTagInput] = useState('');
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-    // 로그인 안 한 경우(localStorage에 token이 없는 경우) 로그인 페이지로 이동
+
+
     if (!localStorage.getItem('access_token')) {
-        // 로그인이 해주세요 경고창과 함께 로그인 페이지로 이동
         alert('로그인이 필요합니다.');
         window.location.href = '/login';
     }
@@ -42,6 +51,7 @@ const ArticleCreate: React.FC = () => {
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        console.log("qweqwe")
         e.preventDefault();
         try {
             const response = await createArticle(article);
@@ -61,6 +71,63 @@ const ArticleCreate: React.FC = () => {
             }
         }
     };
+
+
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.size > 10 * 1024 * 1024) {
+            alert('10MB 이하의 파일만 업로드 가능합니다.');
+            return;
+        }
+
+        const lastDot = file.name.lastIndexOf('.');
+        const ext = file.name.substring(lastDot + 1);
+        const filename = uuidv4() + "." + ext;
+
+        // localstorage에 있는 access_token안에 있는 user_id를 가져온다.
+        const user_id = localStorage.getItem('user_id')
+        const key = `user/${user_id}/article/${filename}`
+
+
+        try {
+            const response = await getPresignedUrl(user_id || "", key)
+            console.log("upload url ", response.url)
+            await uploadImageToS3(response.url, file);
+
+            const imageUrl = `https://${ARTICLE_BUCKET}.s3.${REGION}.amazonaws.com/${key}`;
+            insertTextAtCursor(`![image](${imageUrl})`);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    };
+
+    const handleCursorPosition = () => {
+        if (textAreaRef.current) {
+            return textAreaRef.current.selectionStart;  // 커서 위치 가져오기
+        }
+        return 0;  // 참조가 없는 경우, 0 반환
+    };
+
+
+    const insertTextAtCursor = (text: string) => {
+        const cursorPosition = handleCursorPosition();
+        const textBeforeCursor = article.body.substring(0, cursorPosition);
+        const textAfterCursor = article.body.substring(cursorPosition);
+        const newText = `${textBeforeCursor}${text}\n${textAfterCursor}`;
+        setArticle({ ...article, body: newText });
+
+        if (textAreaRef.current) {
+            setTimeout(() => {
+                // @ts-ignore
+                textAreaRef.current.selectionStart = cursorPosition + text.length;
+                // @ts-ignore
+                textAreaRef.current.selectionEnd = cursorPosition + text.length;
+            }, 0);
+        }
+    };
+
 
     return (
         <div className="container mx-auto p-4">
@@ -82,8 +149,34 @@ const ArticleCreate: React.FC = () => {
                 <div className="form-control">
                     <label className="label">
                         <span className="label-text">Body</span>
+                        <input
+                            type="file"
+                            onChange={handleFileUpload}
+                            accept="image/jpg, image/png, image/jpeg"
+                            className="cursor-pointer bg-gray-100 border border-gray-300 p-2 rounded hover:bg-gray-200 text-sm"
+                        />
                     </label>
-                    <textarea name="body" placeholder="Write your article (in markdown)" value={article.body} onChange={handleChange} rows={8} className="textarea textarea-bordered h-24 w-full bg-white"></textarea>
+
+                    <div className="flex">
+                        <div className="flex-1 p-2">
+                        <textarea
+                            ref={textAreaRef}
+                            value={article.body}
+                            name={"body"}
+                            onChange={handleChange}
+                            rows={10}
+                            className="w-full p-2 border rounded"
+                            placeholder="Write your article (in markdown)"
+                        ></textarea>
+                        </div>
+                        <div className="flex-1 p-2">
+                            <div className="border rounded p-2 overflow-y-auto" style={{ height: '100%' }}>
+                                <ReactMarkdown  className="prose">{article.body}</ReactMarkdown>
+
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div className="form-control">
