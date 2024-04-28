@@ -7,7 +7,7 @@ import {PresignedUrlType} from "../types/s3Service";
 export const getPresignedUrl = async (authorId: string, key: string): Promise<PresignedUrlType> => {
     try {
         // query param limit=10 추가
-        const response = await axios.get<PresignedUrlType>(`${BASE_URL}/user/${authorId}/article/upload`, {
+        const response = await axios.get<PresignedUrlType>(`${BASE_URL}/user/${authorId}/article-upload`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("access_token")}`,
