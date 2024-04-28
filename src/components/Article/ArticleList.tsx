@@ -121,7 +121,7 @@ const ArticleList: React.FC = () => {
             <div className="flex">
                 <div className="flex-grow"> {/* 이 부분이 좌측 컨테이너입니다 */}
                     <FeedTab activeTab={activeTab} onTabChange={handleTabChange} />
-                    {articles.map((article) => (
+                    {articles && articles.map((article) => (
                         <ArticleItem
                             key={article.article_id}
                             article={article}

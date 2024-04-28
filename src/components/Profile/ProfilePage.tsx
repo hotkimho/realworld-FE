@@ -122,7 +122,7 @@ const ProfilePage: React.FC = () => {
                 </div>
             </div>
             <div className="container mx-auto p-4">
-                {articles.map((article: ArticleItemType) => (
+                {articles && articles.map((article: ArticleItemType) => (
                     <ArticleItem
                         key={article.article_id}
                         article={article}

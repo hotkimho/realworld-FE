@@ -226,7 +226,7 @@ const ArticleView: React.FC = () => {
                 </ReactMarkdown>
 
                 <div className="flex flex-wrap my-4">
-                    {article.tag_list?.map((tag, index) => (
+                    {article.tag_list && article.tag_list?.map((tag, index) => (
                         <span key={index} className="bg-gray-200 text-gray-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">
                         {tag}
                     </span>

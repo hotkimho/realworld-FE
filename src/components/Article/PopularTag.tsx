@@ -33,7 +33,7 @@ const PopularTag: React.FC<PopularTagsProps> = ({onSelectTag}) => {
         <div style={{ width: '250px', marginLeft: '10px', marginTop: '48px' }} className="p-4 bg-white rounded-lg shadow overflow-hidden">
             <h2 className="text-lg font-bold mb-3">Popular Tags</h2>
             <div className="flex flex-wrap">
-                {tags.map((tag) => (
+                {tags && tags.map((tag) => (
                     <button key={tag}
                             className="bg-gray-200 text-gray-700 text-sm font-medium px-3 py-1 rounded hover:bg-gray-300 m-1"
                             onClick={() => onSelectTag(tag)}>

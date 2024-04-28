@@ -77,7 +77,7 @@ const CommentList: React.FC<CommentListProps> = (
 
     return (
         <div className="max-w-2xl mx-auto my-4">
-            {comments.map((comment) => (
+            {comments && comments.map((comment) => (
                 <div key={comment.comment_id} className="border rounded-lg shadow my-2">
                     <div className="bg-white p-4 flex justify-between">
                         {editingCommentId === String(comment.comment_id) ? (

@@ -232,7 +232,7 @@ const ArticleEdit: React.FC = () => {
                         className="input input-bordered w-full bg-white"
                     />
                     <div className="flex flex-wrap mt-2">
-                        {article.tag_list.map((tag, index) => (
+                        {article.tag_list && article.tag_list.map((tag, index) => (
                             <div key={index} className="badge m-1 flex items-center bg-gray-200 text-gray-800">
                             <span
                                 className="cursor-pointer px-2"
